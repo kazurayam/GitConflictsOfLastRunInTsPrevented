@@ -13,25 +13,23 @@ When you create a Test Suite `Test Suite/TS1`, Katalon Stuido will make `<projec
    <lastRun>2018-12-03T10:12:41</lastRun>
 ...
 ```
-Here you will find a timestamp info `<lastRun>2018-12-03T10:12:41</lastRun>` included. This timestamp will be (but not necessarily) updated by Katalon Studio everytime you ran the `Test Suites/TS1`. If you share the project via Git remote repository with one or more of your team mates, this timestamp info tends to cause problems.
+Here you will find a timestamp info `<lastRun>2018-12-03T10:12:41</lastRun>` included. This timestamp will be updated by Katalon Studio everytime you ran the `Test Suites/TS1`. If you share the project via Git remote repository with your team mates, this `lastRun` info likely to cause conflicts when you try merge the remote `origin/master` branch into your local `master` branch.
+
+### How to reproduce conflicts
 
 I have made another Katalon Studio project and published it on GitHub:
 - https://github.com/kazurayam/GitConflictsOfLastRunInTsReproduced
 
-Please read the doc of this 'Reproduced' project and what I mean by saying conflicts of `<lastRun>timestamp</lastRun>` in \*.ts files.
+in there I described how the annoying conflicts occurs.
 
-## Related discussions
 
-In the Katalon Studio Forum, there are a few discussions related to this problem.
+## Solution proposed
 
-1. [Git: master->master \[rejected - non-fast-forward\]](https://forum.katalon.com/discussion/11284/git-master-master-rejected-non-fast-forward) by Mate Mrse at 11/30/2018
-2. [\[Suggestion\]\[Katalon Studio\] Last Run info could be saved in a serarate file \(in the .ts file\)](https://forum.katalon.com/discussion/7146/suggestion-katalon-studio-last-run-info-could-be-saved-in-a-separate-fille-not-in-the-ts-file) by Lauro Araujo at 05/31/2018
-3. [Every time I run test suite it will be updated then I have a new git commit](https://forum.katalon.com/discussion/9587/every-time-i-run-test-suite--it--will-be-updated-then-i-have-a-new-git-commit) by qiulang at 09/11/2018
-4. [Commits from different machines cause conflicts in Git](https://forum.katalon.com/discussion/4881/commits-from-different-machines-cause-conflicts-in-git) by Alex Brohin at 08/04/2017
 
-### Notable thing
 
-At 08/10/2017 (16 months ago), Oliver Howard posted a comment https://forum.katalon.com/discussion/comment/10492/#Comment_10492 where he presented a solution by configuring Git with filter and .gitattribute file in oder to prevent conflicts of `<lastRun>timestamp</lastRun>` in \*.ts files in a Katalon Studio project. I am going to explain the same know-how in a more verbose way so that this know-how is shared by more number of Katalon Studio uses working with Git.
+
+
+
 
 
 
@@ -64,30 +62,38 @@ E-mail bug reports to: <bug-gnu-utils@gnu.org>.
 Be sure to include the word 'sed' somewhere in the 'Subject:' field.
 ```
 
+If you see garbled characters in the Command prompt, you need to change the code page to be UTF-8:
+```
+C:\Users\kazurayam>chcp 65001
+```
 
 
 
+Edit the followin file with your favorite text editor.
+-  `%USERPROFILE%\.gitconfig`  on Windows
+- `~/.gitconfig` on Mac/Linux
 
-https://stackoverflow.com/questions/6557467/can-git-ignore-a-specific-line
-
-
-`sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!g" < makeIndex.ts`
-
-
-in $HOME/.gitconfig file
+You want to insert the following 3 lines:
 ```
 [filter "lastRun-in-ts"]
-  smudge = sed \"s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!\"
-  clean  = sed \"s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!\"
+	smudge = sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
+	clean = sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
 ```
 
-In the command line, you want to type git config command as follows:
-```
-$ git config --global filter.lastRun-in-ts.smudge 'sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"'
-$ git config --global filter.lastRun-in-ts.clean  'sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"'
-```
 
 Then you add `.gitattributes` file into the project directory:
 ```
 *.ts filter=lastRun-in-ts
 ```
+
+## Related discussions
+
+In the Katalon Studio Forum, there are a few discussions related to the `lastRun` conflicts.
+
+1. [Git: master->master \[rejected - non-fast-forward\]](https://forum.katalon.com/discussion/11284/git-master-master-rejected-non-fast-forward) by Mate Mrse at 11/30/2018
+2. [\[Suggestion\]\[Katalon Studio\] Last Run info could be saved in a serarate file \(in the .ts file\)](https://forum.katalon.com/discussion/7146/suggestion-katalon-studio-last-run-info-could-be-saved-in-a-separate-fille-not-in-the-ts-file) by Lauro Araujo at 05/31/2018
+3. [Every time I run test suite it will be updated then I have a new git commit](https://forum.katalon.com/discussion/9587/every-time-i-run-test-suite--it--will-be-updated-then-i-have-a-new-git-commit) by qiulang at 09/11/2018
+4. [Commits from different machines cause conflicts in Git](https://forum.katalon.com/discussion/4881/commits-from-different-machines-cause-conflicts-in-git) by Alex Brohin at 08/04/2017
+
+Please note one thing.
+At 08/10/2017 (16 months ago), Oliver Howard posted a comment https://forum.katalon.com/discussion/comment/10492/#Comment_10492 where he presented a solution to `lastRun` conflicts. He explained how to configure Git with filter and .gitattribute file. Thanks to Oliver, but this comment seems to be unknown by Katalon users. I am going to explain just the same know-how again in a more verbose way so that it is shared by more of Katalon Studio uses working with Git.
