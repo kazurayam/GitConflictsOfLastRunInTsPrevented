@@ -1,5 +1,7 @@
 # How to prevent Git conflicts of `<lastRun>...</lastRun>` in `*.ts` files in Katalon Studio
 
+by kazurayam 5,Dec 2018
+
 ## Problem to solve
 
 When you create a Test Suite `Test Suite/TS1`, Katalon Stuido will make `<projectDir>/Test Suites/TS1.ts` file. The file will look like, for example, as follows:
@@ -13,7 +15,8 @@ When you create a Test Suite `Test Suite/TS1`, Katalon Stuido will make `<projec
    <lastRun>2018-12-02T10:22:40</lastRun>
 ...
 ```
-Here you will find a timestamp info `<lastRun>...</lastRun>` included. This timestamp will be updated by Katalon Studio everytime you ran the `Test Suites/TS1`.
+
+Please find a timestamp info `<lastRun>...</lastRun>` included. This timestamp will be updated by Katalon Studio when you ran the `Test Suites/TS1`.
 
 If you share the project via a remote Git repository with your team mates, this `lastRun` info tends to causes conflicts.
 
@@ -66,10 +69,10 @@ $ cat "Test Suites/TS1.ts"
    <mailRecipient></mailRecipient>
 ...
 ```
-9. So messy. You are lost. You do not know what to do nest.
+9. So messy. You are lost. You do not know what to do next.
 
 >I have made another Katalon Studio project and published it on GitHub in order to trace the above operation and results:
-- https://github.com/kazurayam/GitConflictsOfLastRunInTsReproduced
+>- https://github.com/kazurayam/GitConflictsOfLastRunInTsReproduced
 
 
 
@@ -81,11 +84,13 @@ We will employ 2 Git features.
 2. `.gitattributes` file
 
 >Reference
-- [Pro Git, 8.2 Customizing Git - Git Attributes](https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes)
+>- [Pro Git, 8.2 Customizing Git - Git Attributes](https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes)
 
 The `<proejectDir>/Test Suites/TS1.ts` file is very important for a Katalon Studio project. It is the definition of a Test Suite `TS1`. You can not *gitignore* it. You should save it in the Git repository.
 
-However the `<lastRun>...</lastRun>` line in the `TS1.ts` file is NOT significant. Whatever timestamp is saved in Git repository, it does not matter (possibly). The `<lastRun>` info in `TS1.ts` file the working directory will be just overwritten by Katalon Studio when necessary.
+However the `<lastRun>...</lastRun>` line in the `TS1.ts` file looks  NOT significant. Whatever timestamp is saved in Git repository, possibly it does not matter. You can let Katalon Studio to overrite `<lastRun>` info in `TS1.ts` file the working directory as it wants to.
+
+>I have no idea how the lastRun info is used by Katalon Studio. Is it really necessary? --- I doubt it.
 
 The idea is as follows:
 
@@ -99,19 +104,25 @@ The following figure explains what *filter* does.
 
 ## How to implement the solution
 
-### Choose filter tool of your choice
+### Step1 Choose filter tool of your choice : sed
 
-Git filter requires one-liner to filter a file. Here I choose good old [`sed`](http://gnuwin32.sourceforge.net/packages/sed.htm) command.
+Git filter requires one-liner script to filter a file. Here I choose good old [`sed`](http://gnuwin32.sourceforge.net/packages/sed.htm) command. `sed` is built-in on Mac OSX and linux. But if you work on Windows then you need to install *sed for Windows*. I will guide how to later.
 
 `sed` is not the only one to implement Git filter. [git-scm.com](https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes) shows a filter by Ruby. [Other page](https://www.jimhester.com/2017/11/01/git_clean_smudge/) uses Perl. Which ever command is OK as far as it works as a test filter.
 
-### define Git filters
+### Step2 Define Git filters
 
-You are required to edit the `.gitconfig` of your OS user, which is located at
+We will define a pair of Git filter
+1. `lastRun-in-ts.clean`
+2. `lastRun-in-ts.smudge`
+
+In order to do it, you want to edit the `.gitconfig` of your OS user, which is located at
 - `%USERPROFILE%\.gitconfig` in Windows
 - `~/.gitconfig` in Mac OSX and Linux
 
-I insterted the following lines using text editor manually.
+You can use any text editor of your choice.
+
+You want to instert following lines:
 ```
 [filter "lastRun-in-ts"]
         smudge = sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
@@ -121,15 +132,21 @@ I insterted the following lines using text editor manually.
 You can check the editting result in Katalon Forum as well. Open Katalon Studio and click `Window > Katalon Studio Preferences`. In the dialog, select `Team > Git > Configure`. In the  
 ![TeamGitConfigure](docs/images/Window_KatalonStudioPreferences_Team_Git_Configuration.png)
 
-All of your team members and CI servers who will execute the Katalon Studio project in question are requested to edit the `~/.gitconfig` file as described here.
+All of your team members and CI servers who will execute the Katalon Studio project are required to edit the `~/.gitconfig` file as described here.
 
+### Step3 Add `.gitattributes` file to the project
 
+The `filter.lastRun-in-ts.clean` and `filter.lastRun-in-ts.smudge` defined in the `~/.gitconfig` file has global scope to all of Git repository of the user. However you have option if you want to make those filters effective to each indivisual Git repositories (= Katalon Studio projects).
 
-### add `.gitattributes` file to the project
+In order to make those filters effective, you want to add  `.gitattributes` file into the project directory:
+```
+*.ts filter=lastRun-in-ts
+```
+![gitattributes](docs/images/gitattributes.png)
 
-The `filter.lastRun-in-ts.clean` and `filter.lastRun-in-ts.smudge` defined in the `~/.gitconfig` file has global scope to all of Git repository of the user.
+You should add `.gitattributes` file into the repository and let it shared by all of your team members.
 
-### install `sed for Windows`
+## Installing `sed for Windows`
 
 The method I present here requires `sed` command on your machine operational in the command line. MacOS and Linux has `sed` built-in. But Windows does not have it.
 
@@ -165,24 +182,9 @@ C:\Users\kazurayam>chcp 65001
 
 
 
-Edit the followin file with your favorite text editor.
--  `%USERPROFILE%\.gitconfig`  on Windows
-- `~/.gitconfig` on Mac/Linux
-
-You want to insert the following 3 lines:
-```
-[filter "lastRun-in-ts"]
-	smudge = sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
-	clean = sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
-```
 
 
-Then you add `.gitattributes` file into the project directory:
-```
-*.ts filter=lastRun-in-ts
-```
 
-##
 ## Related discussions
 
 In the Katalon Studio Forum, there are a few discussions related to the `lastRun` conflicts.
