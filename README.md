@@ -10,30 +10,126 @@ When you create a Test Suite `Test Suite/TS1`, Katalon Stuido will make `<projec
    <name>TS1</name>
    <tag></tag>
    <isRerun>false</isRerun>
-   <lastRun>2018-12-03T10:12:41</lastRun>
+   <lastRun>2018-12-02T10:22:40</lastRun>
 ...
 ```
-Here you will find a timestamp info `<lastRun>2018-12-03T10:12:41</lastRun>` included. This timestamp will be updated by Katalon Studio everytime you ran the `Test Suites/TS1`. If you share the project via Git remote repository with your team mates, this `lastRun` info likely to cause conflicts when you try merge the remote `origin/master` branch into your local `master` branch.
+Here you will find a timestamp info `<lastRun>...</lastRun>` included. This timestamp will be updated by Katalon Studio everytime you ran the `Test Suites/TS1`.
 
-### How to reproduce conflicts
+If you share the project via a remote Git repository with your team mates, this `lastRun` info tends to causes conflicts.
 
-I have made another Katalon Studio project and published it on GitHub:
+Following steps illustrates how a Git conflict for `<lastRun>` occurs.
+
+1. Your team mate had pushed `<lastRun>2018-12-04T14:12:26</lastRun>` to `<projectDir>/Test Suites/TS1.ts` file in the `master` branch of the remote Git repository.
+2. Unfortunately, you forgot to *pull* the remote repository.
+3. Your remote-tracking branch `origin/master` has `<projectDir>/Test Suites/TS1.ts` file with old value of `<lastRun>2018-12-02T10:22:40</lastRun>`.
+4. You opended Katalon Studio and executed `Test Suites/TS1`. Effectively `TS1.ts` file in the Working Directory was updated with new timestamp `2018-12-04T14:26:55`.
+5. You successfully executed `$ git add .` and `$ git commit -m ".."`. Effectively you updated `<projectDir>/Test Suites/TS1.ts` file in the local `master` branch with new value `<lastRun>2018-12-04T14:26:55</lastRun>`.
+6. Then you do `$ git push`. You will encounter a error saying as follows:.
+```
+To https://github.com/kazurayam/GitConflictsOfLastRunInTsReproduced.git
+ ! [rejected]        master -> master (fetch first)
+error: failed to push some refs to 'https://github.com/kazurayam/GitConflictsOfLastRunInTsReproduced.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+```
+7. You got a bit surprised but recognized you need to do  *git pull*. So you tried, but you got CONFLICT with the following message.
+```
+$ git pull
+remote: Enumerating objects: 7, done.
+remote: Counting objects: 100% (7/7), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 4 (delta 2), reused 4 (delta 2), pack-reused 0
+Unpacking objects: 100% (4/4), done.
+From https://github.com/kazurayam/GitConflictsOfLastRunInTsReproduced
+   06c3863..6ad77e2  master     -> origin/master
+Auto-merging Test Suites/TS1.ts
+CONFLICT (content): Merge conflict in Test Suites/TS1.ts
+Automatic merge failed; fix conflicts and then commit the result.
+```
+8. You looked at the content of TS1.ts file. You found a marke-up for conflict as follows:
+```
+$ cat "Test Suites/TS1.ts"
+<?xml version="1.0" encoding="UTF-8"?>
+<TestSuiteEntity>
+   <description></description>
+   <name>TS1</name>
+   <tag></tag>
+   <isRerun>false</isRerun>
+<<<<<<< HEAD
+   <lastRun>2018-12-04T14:26:55</lastRun>
+=======
+   <lastRun>2018-12-04T14:12:26</lastRun>
+>>>>>>> 6ad77e2a58ebbebd19f16c15f3e202942ada58bf
+   <mailRecipient></mailRecipient>
+...
+```
+9. So messy. You are lost. You do not know what to do nest.
+
+>I have made another Katalon Studio project and published it on GitHub in order to trace the above operation and results:
 - https://github.com/kazurayam/GitConflictsOfLastRunInTsReproduced
 
-in there I described how the annoying conflicts occurs.
+
 
 
 ## Solution proposed
 
+We will employ 2 Git features.
+1. filter
+2. `.gitattributes` file
+
+>Reference
+- [Pro Git, 8.2 Customizing Git - Git Attributes](https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes)
+
+The `<proejectDir>/Test Suites/TS1.ts` file is very important for a Katalon Studio project. It is the definition of a Test Suite `TS1`. You can not *gitignore* it. You should save it in the Git repository.
+
+However the `<lastRun>...</lastRun>` line in the `TS1.ts` file is NOT significant. Whatever timestamp is saved in Git repository, it does not matter (possibly). The `<lastRun>` info in `TS1.ts` file the working directory will be just overwritten by Katalon Studio when necessary.
+
+The idea is as follows:
+
+1. we will intentionally keep the lastRun info in \*.ts files to be a Magical Timestamp *2018-12-01T00:00:00* anywhere in the Git repository for the Katalon Project. Here by saying *Anywhere* I means either of local and remote repository, all of branches, either of local branch: "master", staging area and remote-tracking branch: "origin/master".  
+2. The \*.ts files in Working Directory will be updated by Katalon Studio when you run a Test Suite. OK. Let it go as designed.
+3. When you do "git add Test\ Suite/TS1.ts", *clean* filter reads the file in the Working Directory, rewrite it to have `<lastRun>2018-12-01T00:00:00<lastRun>`, and stage it.
+4. When you do "git clone <remote git repository url>", *smudge* filter reads the file in the local branch, rewrite it to have `<lastRun>2018-12-01T00:00:00<lastRun>`, and locate the result in the Working Directory.
+
+The following figure explains what *filter* does.
+![filter](docs/images/Git%20clean%20filter%20and%20smudge%20filter.png)
+
+## How to implement the solution
+
+### Choose filter tool of your choice
+
+Git filter requires one-liner to filter a file. Here I choose good old [`sed`](http://gnuwin32.sourceforge.net/packages/sed.htm) command.
+
+`sed` is not the only one to implement Git filter. [git-scm.com](https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes) shows a filter by Ruby. [Other page](https://www.jimhester.com/2017/11/01/git_clean_smudge/) uses Perl. Which ever command is OK as far as it works as a test filter.
+
+### define Git filters
+
+You are required to edit the `.gitconfig` of your OS user, which is located at
+- `%USERPROFILE%\.gitconfig` in Windows
+- `~/.gitconfig` in Mac OSX and Linux
+
+I insterted the following lines using text editor manually.
+```
+[filter "lastRun-in-ts"]
+        smudge = sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
+        clean = sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
+```
+
+You can check the editting result in Katalon Forum as well. Open Katalon Studio and click `Window > Katalon Studio Preferences`. In the dialog, select `Team > Git > Configure`. In the  
+![TeamGitConfigure](docs/images/Window_KatalonStudioPreferences_Team_Git_Configuration.png)
+
+All of your team members and CI servers who will execute the Katalon Studio project in question are requested to edit the `~/.gitconfig` file as described here.
 
 
 
+### add `.gitattributes` file to the project
 
+The `filter.lastRun-in-ts.clean` and `filter.lastRun-in-ts.smudge` defined in the `~/.gitconfig` file has global scope to all of Git repository of the user.
 
-
-
-
-## install `sed for Windows`
+### install `sed for Windows`
 
 The method I present here requires `sed` command on your machine operational in the command line. MacOS and Linux has `sed` built-in. But Windows does not have it.
 
@@ -86,6 +182,7 @@ Then you add `.gitattributes` file into the project directory:
 *.ts filter=lastRun-in-ts
 ```
 
+##
 ## Related discussions
 
 In the Katalon Studio Forum, there are a few discussions related to the `lastRun` conflicts.
