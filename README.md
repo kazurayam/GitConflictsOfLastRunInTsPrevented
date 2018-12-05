@@ -18,7 +18,7 @@ When you create a Test Suite `Test Suite/TS1` in a Katalon Studio project, Katal
 
 Please find a timestamp info as `<lastRun>` is included. This timestamp will be updated by Katalon Studio when you ran the `Test Suites/TS1`.
 
-Here I assume that you have made the project version-controlled by Git. And you would want to share the project with your team mates via a remote Git repository. It is certainly a good idea. You would change `lastRun` info in \*.ts files, and your team mates would change it as well.
+Here I assume that you have made the project version-controlled by Git. And you have built a remote Git repository to share the project with your team mates. It is certainly a good idea. You would change `lastRun` info in \*.ts files, and your team mates also would change the same portion as well.
 
 I tell you the truth, those changes tend to conflict when you try to merge the changes. The `lastRun` conflict is a small problem. But it is itchy and annoying.
 
