@@ -197,14 +197,14 @@ index cbb23dc..8145846 100644
     <name>TS1</name>
     <tag></tag>
     <isRerun>false</isRerun>
--   <lastRun>2018-12-03T13:23:51</lastRun>
+-   <lastRun>2018-12-04T14:26:55</lastRun>
 +   <lastRun>2018-12-01T00:00:00</lastRun>
     <mailRecipient></mailRecipient>
     <numberOfRerun>0</numberOfRerun>
     <pageLoadTimeout>30</pageLoadTimeout>
 ```
 
-Please note, the `lastRun` info is edited by the `lastRun-in-ts` filter. The timestamp is chaged from `2018-12-03T13:23:51` to `2018-12-01T00:00:00`.
+Please note, the `lastRun` info is edited by the `lastRun-in-ts` filter. The timestamp is chaged from `2018-12-03T13:23:51` to `2018-12-01T00:00:00`. It is surprising that the lastest timestamp in the Working Directory `2018-12-05T16:21:52` is silently ignored by *git diff* and *git add*.
 
 ### Step.5 Cleaning the project
 
