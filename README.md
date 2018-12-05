@@ -1,4 +1,4 @@
-# How to prevent Git conflicts of `<lastRun>...</lastRun>` in `*.ts` files in Katalon Studio
+# Why changes of `<lastRun>` info in a `*.ts` file conflict --- how to prevent it
 
 by kazurayam 5,Dec 2018
 
@@ -22,16 +22,21 @@ You have made the project version-controlled by Git. It's good idea. And you wan
 
 I would warn you. The changes of `lastRun` info made by yourself and by your team mates tend to conflict. This problem is small but itchy, and will make your team collaboration very hard.
 
-### How Git conflict occurs in a Katalon Studio project --- a typical case
+### Why changes of `lastRun` info in a `*.ts` file conflict --- a typical case
 
-Following steps illustrates how a Git conflict for `<lastRun>` occurs.
+>Reference: [Git Glossary document](https://git-scm.com/docs/gitglossary/2.19.1)
 
-1. Your team mate had pushed `<lastRun>2018-12-04T14:12:26</lastRun>` to `<projectDir>/Test Suites/TS1.ts` file in the `master` branch of the remote Git repository.
-2. Unfortunately, you forgot to *pull* the remote repository.
-3. Your remote-tracking branch `origin/master` has `<projectDir>/Test Suites/TS1.ts` file with old value of `<lastRun>2018-12-02T10:22:40</lastRun>`.
-4. You opended Katalon Studio and executed `Test Suites/TS1`. Effectively `TS1.ts` file in the Working Directory was updated with new timestamp `2018-12-04T14:26:55`.
-5. You successfully executed `$ git add .` and `$ git commit -m ".."`. Effectively you updated `<projectDir>/Test Suites/TS1.ts` file in the local `master` branch with new value `<lastRun>2018-12-04T14:26:55</lastRun>`.
-6. Then you do `$ git push`. You will encounter a error saying as follows:.
+Following figure and step-wise description illustrates how conflict occurs.
+
+![Why](docs/images/Why%20changes%20of%20lastRun%20conflict.png)
+
+1. Here we assume your team as a Git repository on a remote server, you and your team mates are sharing it. You hava a test suite named `Test Suites/TS1`, and you find a file named `TS1.ts` in the Working Directory. Current `TS1.ts` file contains a line: `<lastRun>2019-12-02T10:22:40</lastRun>`. On your machine, your remote-tracking branch `origin/master` and your local branch `master` have `Test Suites/TS1.ts` file with the same timestamp.
+2. Your team mate Alice pushed `<lastRun>2018-12-04T14:12:26</lastRun>` into the remote Git repository.
+3. Unfortunately, you forgot to *fetch* the change in the remote repository.
+4. You started Katalon Studio to open the project. You executed `Test Suites/TS1`. Effectively `TS1.ts` file in the Working Directory was updated with new timestamp `2018-12-04T14:26:55`.
+5. You executed `$ git add .` successfully.
+6. You executed `$ git commit -m "update"` successfully. Your local branch `master` branch was updated with new timestamp `2018-12-04T14:26:55`.
+7. Then you do `$ git push`. You will encounter a error saying as follows:.
 ```
 To https://github.com/kazurayam/GitConflictsOfLastRunInTsReproduced.git
  ! [rejected]        master -> master (fetch first)
@@ -42,7 +47,8 @@ hint: to the same ref. You may want to first integrate the remote changes
 hint: (e.g., 'git pull ...') before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 ```
-7. You got a bit surprised but recognized you need to do  *git pull*. So you tried, but you got CONFLICT with the following message.
+This error occured because you the remote remository had `2018-12-04T14:12:26` as latest value, while your remote-tracking branch `origin/master` had `2019-12-02T10:22:40`.
+8. You got a bit surprised but recognized you need to do  *git pull* (or git fetch & git Merge). So you tried. But you got *merge conflict* with the following message.
 ```
 $ git pull
 remote: Enumerating objects: 7, done.
