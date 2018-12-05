@@ -32,8 +32,8 @@ Following figure and step-wise description illustrates how conflict occurs.
 
 1. Here we assume your team has a Git repository for your Katalon project on a remote server. Your team mates are sharing the `master` branch in it. The project has test suite named `Test Suites/TS1`, and you find a file `<projectDir>/Test Suites/TS1.ts` in the Working Directory. Current `TS1.ts` file contains a line: `<lastRun>2018-12-02T10:22:40</lastRun>`. On your machine, your remote-tracking branch `origin/master` and your local branch `master` have `Test Suites/TS1.ts` file with the same timestamp.
 2. Your team mate Alice pushed `<lastRun>2018-12-04T14:12:26</lastRun>` into the remote Git repository.
-3. Unfortunately, you forgot to *fetch* the change in the remote repository.
-4. You started Katalon Studio to open the project. You executed `Test Suites/TS1`. Effectively `TS1.ts` file in the Working Directory was updated with new timestamp `2018-12-04T14:26:55`.
+3. Unfortunately, you forgot to *fetch* the change made in the remote repository.
+4. You started Katalon Studio and opened the project. You executed `Test Suites/TS1`. Effectively `TS1.ts` file in the Working Directory was updated with new timestamp `2018-12-04T14:26:55`.
 5. You executed `$ git add .` successfully.
 6. You executed `$ git commit -m "update"` successfully. Your local branch `master` branch was updated with new timestamp `2018-12-04T14:26:55`.
 7. Then you do `$ git push`. You will encounter a error saying as follows:.
@@ -46,9 +46,10 @@ hint: not have locally. This is usually caused by another repository pushing
 hint: to the same ref. You may want to first integrate the remote changes
 hint: (e.g., 'git pull ...') before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+...
 ```
-This error occured because you the remote remository had `2018-12-04T14:12:26` as latest value, while your remote-tracking branch `origin/master` had `2019-12-02T10:22:40`.
-8. You got a bit surprised but recognized you need to do  *git pull* (or git fetch & git Merge). So you tried. But you got *merge conflict* with the following message.
+This error occured because the remote remository had `2018-12-04T14:12:26` while your remote-tracking branch `origin/master` had a different value: `2019-12-02T10:22:40`.
+8. You got a bit surprised but recognized you need to do  *git pull* (or *git fetch* + *git merge*). So you did. Then you got error with the following message.
 ```
 $ git pull
 remote: Enumerating objects: 7, done.
@@ -61,8 +62,9 @@ From https://github.com/kazurayam/GitConflictsOfLastRunInTsReproduced
 Auto-merging Test Suites/TS1.ts
 CONFLICT (content): Merge conflict in Test Suites/TS1.ts
 Automatic merge failed; fix conflicts and then commit the result.
+...
 ```
-8. You looked at the content of TS1.ts file. You found a marke-up for conflict as follows:
+8. You looked at the content of `TS1.ts` file in the Working Directory. You found the file is modified by git with conflict markers `<<<<<<<`, `=======` and `>>>>>>>`. As follows:
 ```
 $ cat "Test Suites/TS1.ts"
 <?xml version="1.0" encoding="UTF-8"?>
@@ -79,7 +81,7 @@ $ cat "Test Suites/TS1.ts"
    <mailRecipient></mailRecipient>
 ...
 ```
-9. So messy. You are lost. You do not know what to do next.
+9. So messy. You had to resolve the merge conflict. This requires sound understanding about Git. Annoying.
 
 >I have made another Katalon Studio project and published it on GitHub in order to trace the above operation and results:
 >- https://github.com/kazurayam/GitConflictsOfLastRunInTsReproduced
@@ -148,7 +150,7 @@ All of your team members and CI servers who will execute the Katalon Studio proj
 
 The `filter.lastRun-in-ts.clean` and `filter.lastRun-in-ts.smudge` defined in the `~/.gitconfig` file has global scope to all of Git repository of the user. However you have option if you want to make those filters effective to each indivisual Git repositories (= Katalon Studio projects).
 
-In order to make those filters effective, you want to add  `.gitattributes` file into the project directory:
+In order to make those filters effective, you want to add  [`.gitattributes`](.gitattributes) file into the project directory:
 ```
 *.ts filter=lastRun-in-ts
 ```
