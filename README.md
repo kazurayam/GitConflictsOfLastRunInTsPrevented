@@ -148,7 +148,7 @@ sed 's!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!'
 ```
 This one-liner filters a string `<lastRun>` followed by any string followed by `</lastRun>` to a constant string `<lastRun>2018-12-01T00:00:00</lastRun>`.
 
-Please note that a pair of single quotation `'s!< ....?!'` is used.
+Please note that a pair of single quotation `'s! .... !'` is used.
 
 You can check the editting result in Katalon Forum as well. Open Katalon Studio and click `Window > Katalon Studio Preferences`. In the dialog, select `Team > Git > Configure`. In the  
 ![TeamGitConfigure](docs/images/Window_KatalonStudioPreferences_Team_Git_Configuration.png)
