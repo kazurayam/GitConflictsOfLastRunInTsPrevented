@@ -137,8 +137,8 @@ You can use any text editor of your choice.
 You want to instert following lines:
 ```
 [filter "lastRun-in-ts"]
-        smudge = sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
-        clean = sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
+        smudge = sed 's!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!''
+        clean = sed 's!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!''
 ```
 This code defines a filter named `lastRun-in-ts`. Because it is written in the `~/.gitconfig` file, the filter is considered --global.
 
