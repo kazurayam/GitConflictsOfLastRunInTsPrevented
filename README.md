@@ -4,7 +4,7 @@ by kazurayam 5,Dec 2018
 
 ## Problem to solve
 
-When you create a Test Suite `Test Suite/TS1` in a Katalon Studio project, Katalon Stuido will make `<projectDir>/Test Suites/TS1.ts` file. The file will look like, for example, as follows:
+When you create a Test Suite `Test Suite/TS1` in a Katalon Studio project, Katalon Stuido will make `<projectDir>/Test Suites/TS1.ts` file. Content of the file will look like, for example, as follows:
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <TestSuiteEntity>
@@ -18,7 +18,7 @@ When you create a Test Suite `Test Suite/TS1` in a Katalon Studio project, Katal
 
 Please find a timestamp info as `<lastRun>` is included. This timestamp will be updated by Katalon Studio when you ran the `Test Suites/TS1`.
 
-You have made the project version-controlled by Git. It's good idea. And you want to share the project with your team mates using a remote Git repository? I would tell you, the changes of `lastRun` info made by yourself and by your team mates tend to conflict. This problem is small but itchy. It will make your team collaboration troublesome.
+Here I assume that you have made the project version-controlled by Git. It is certainly a good idea. Then you would want to share the project with your team mates using a remote Git repository. You would change `lastRun` info in \*.ts files, and your team mates would change it as well. Those changes tend to conflict when you try merge. The `lastRun` conflict is a small problem. But it is itchy and annoying.
 
 ### Why changes of `lastRun` info in a `*.ts` file conflict --- a typical case
 
