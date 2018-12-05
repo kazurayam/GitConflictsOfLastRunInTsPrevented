@@ -144,9 +144,11 @@ This code defines a filter named `lastRun-in-ts`. Because it is written in the `
 
 In there you find one line script:
 ```
-sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
+sed 's!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!''
 ```
 This one-liner filters `<lastRun>any string</lastRun>` to a constant string `<lastRun>2018-12-01T00:00:00</lastRun>`.
+
+Please note that a pair of single quotation `'s!< ....?!'` is used.
 
 You can check the editting result in Katalon Forum as well. Open Katalon Studio and click `Window > Katalon Studio Preferences`. In the dialog, select `Team > Git > Configure`. In the  
 ![TeamGitConfigure](docs/images/Window_KatalonStudioPreferences_Team_Git_Configuration.png)
@@ -165,6 +167,46 @@ This one line defines the `lastRun-in-ts` filter to be applicable to the reposit
 ![gitattributes](docs/images/gitattributes.png)
 
 You should add `.gitattributes` file into the repository and let it shared by all of your team members.
+
+## Step3 How git behavior changes
+
+Here assumed you haved defined filters and added .gitattributes.
+
+OK, you start Katalon Studio and run "Test Suites/TS1" again. And you do "git add". What will happen?
+
+```
+$ head -7 "Test Suites/TS1.ts"
+<?xml version="1.0" encoding="UTF-8"?>
+<TestSuiteEntity>
+   <description></description>
+   <name>TS1</name>
+   <tag></tag>
+   <isRerun>false</isRerun>
+   <lastRun>2018-12-05T16:21:52</lastRun>
+...
+```
+The timestamp in `TS1.ts` file in the Working Directory is certainly changed. But ...
+
+```
+$ git diff
+diff --git a/Test Suites/TS1.ts b/Test Suites/TS1.ts
+index cbb23dc..8145846 100644
+--- a/Test Suites/TS1.ts
++++ b/Test Suites/TS1.ts
+@@ -4,7 +4,7 @@
+    <name>TS1</name>
+    <tag></tag>
+    <isRerun>false</isRerun>
+-   <lastRun>2018-12-03T13:23:51</lastRun>
++   <lastRun>2018-12-01T00:00:00</lastRun>
+    <mailRecipient></mailRecipient>
+    <numberOfRerun>0</numberOfRerun>
+    <pageLoadTimeout>30</pageLoadTimeout>
+```
+
+Please note, the `lastRun` info is edited by the `lastRun-in-ts` filter. The timestamp is chaged from `2018-12-03T13:23:51` to `2018-12-01T00:00:00`.
+
+Please commit this and push to the remote Git repository. And spread the magical timestamp `2018-12-01T00:00:00` stuff to all of your team mates and CI servers. Once this constant timestamp is wide-spread all over, then the conflict 'lastRun' info in \*.ts file will NEVER occurs. Because as far as Git repository is concerned, `lastRun` info will never changes, will be equal to the magical timestamp `2018-12-01T00:00:00`. Therefore no conflict should happen any longer.
 
 ## Installing `sed for Windows`
 
