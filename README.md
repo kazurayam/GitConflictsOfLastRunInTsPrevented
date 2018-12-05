@@ -146,7 +146,9 @@ In there you find one line script:
 ```
 sed 's!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!'
 ```
-This one-liner filters a string `<lastRun>` followed by any string followed by `</lastRun>` to a constant string `<lastRun>2018-12-01T00:00:00</lastRun>`.
+This one-liner filters a string `<lastRun>` followed by any string followed by `</lastRun>` to a magical constant string `<lastRun>2018-12-01T00:00:00</lastRun>`.
+
+The date of the magical constant could be any date time. I just chose `2018-12-01T00:00:00` but you can choose any other.
 
 Please note that a pair of single quotation `'s! .... !'` is used.
 
