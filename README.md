@@ -144,9 +144,9 @@ This code defines a filter named `lastRun-in-ts`. Because it is written in the `
 
 In there you find one line script:
 ```
-sed 's!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!''
+sed 's!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!'
 ```
-This one-liner filters `<lastRun>any string</lastRun>` to a constant string `<lastRun>2018-12-01T00:00:00</lastRun>`.
+This one-liner filters a string `<lastRun>` followed by any string followed by `</lastRun>` to a constant string `<lastRun>2018-12-01T00:00:00</lastRun>`.
 
 Please note that a pair of single quotation `'s!< ....?!'` is used.
 
