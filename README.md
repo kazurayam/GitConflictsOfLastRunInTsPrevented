@@ -122,7 +122,7 @@ Git filter requires one-liner script to filter a file. Here I choose good old [`
 
 `sed` is not the only one to implement Git filter. [git-scm.com](https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes) shows a filter by Ruby. [Other page](https://www.jimhester.com/2017/11/01/git_clean_smudge/) uses Perl. Which ever command is OK as far as it works as a test filter.
 
-### Step.2 Define Git filters
+### Step.2 Define Git filters in --global scope
 
 We will define a pair of Git filter
 1. `lastRun-in-ts.clean`
