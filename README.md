@@ -140,6 +140,13 @@ You want to instert following lines:
         smudge = sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
         clean = sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
 ```
+This code defines a filter named `lastRun-in-ts`. Because it is written in the `~/.gitconfig` file, the filter is considered --global.
+
+In there you find one line script:
+```
+sed "s!<lastRun>.*</lastRun>!<lastRun>2018-12-01T00:00:00</lastRun>!"
+```
+This one-liner filters `<lastRun>any string</lastRun>` to a constant string `<lastRun>2018-12-01T00:00:00</lastRun>`.
 
 You can check the editting result in Katalon Forum as well. Open Katalon Studio and click `Window > Katalon Studio Preferences`. In the dialog, select `Team > Git > Configure`. In the  
 ![TeamGitConfigure](docs/images/Window_KatalonStudioPreferences_Team_Git_Configuration.png)
@@ -150,10 +157,11 @@ All of your team members and CI servers who will execute the Katalon Studio proj
 
 The `filter.lastRun-in-ts.clean` and `filter.lastRun-in-ts.smudge` defined in the `~/.gitconfig` file has global scope to all of Git repository of the user. However you have option if you want to make those filters effective to each indivisual Git repositories (= Katalon Studio projects).
 
-In order to make those filters effective, you want to add  [`.gitattributes`](.gitattributes) file into the project directory:
+In order to make those filters effective to the repository = to the Katalon project, you want to add  [`.gitattributes`](.gitattributes) file into the project directory:
 ```
 *.ts filter=lastRun-in-ts
 ```
+This one line defines the `lastRun-in-ts` filter to be applicable to the repository.
 ![gitattributes](docs/images/gitattributes.png)
 
 You should add `.gitattributes` file into the repository and let it shared by all of your team members.
