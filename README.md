@@ -20,7 +20,7 @@ Please find a timestamp info as `<lastRun>` is included. This timestamp will be 
 
 Here I assume that you have made the project version-controlled by Git. And you have built a remote Git repository to share the project with your team mates. It is certainly a good idea. You would change `lastRun` info in \*.ts files, and your team mates also would change the same portion as well.
 
-I tell you the truth, changes of `lastRun` info in \*.ts files tend to conflict when you try to merge the changes. It is a small problem, but annoying a lot.
+I tell you the truth, changes of `lastRun` info in \*.ts files tend to conflict when you try to merge the changes. It is a small problem, but annoying a lot. I want to find some way to prevent the conflicts.
 
 ### Why changes of `lastRun` info in a `*.ts` file conflict --- a typical case
 
