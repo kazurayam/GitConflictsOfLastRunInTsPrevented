@@ -18,9 +18,7 @@ When you create a Test Suite `Test Suite/TS1` in a Katalon Studio project, Katal
 
 Please find a timestamp info as `<lastRun>` is included. This timestamp will be updated by Katalon Studio when you ran the `Test Suites/TS1`.
 
-You have made the project version-controlled by Git. It's good idea. And you want to share the project with your team mates using a remote Git repository?
-
-I would warn you. The changes of `lastRun` info made by yourself and by your team mates tend to conflict. This problem is small but itchy, and will make your team collaboration very hard.
+You have made the project version-controlled by Git. It's good idea. And you want to share the project with your team mates using a remote Git repository? I would tell you, the changes of `lastRun` info made by yourself and by your team mates tend to conflict. This problem is small but itchy. It will make your team collaboration troublesome.
 
 ### Why changes of `lastRun` info in a `*.ts` file conflict --- a typical case
 
@@ -30,7 +28,7 @@ Following figure and step-wise description illustrates how conflict occurs.
 
 ![Why](docs/images/Why%20changes%20of%20lastRun%20conflict.png)
 
-1. Here we assume your team as a Git repository on a remote server, you and your team mates are sharing it. You hava a test suite named `Test Suites/TS1`, and you find a file named `TS1.ts` in the Working Directory. Current `TS1.ts` file contains a line: `<lastRun>2019-12-02T10:22:40</lastRun>`. On your machine, your remote-tracking branch `origin/master` and your local branch `master` have `Test Suites/TS1.ts` file with the same timestamp.
+1. Here we assume your team has a Git repository for your Katalon project on a remote server. Your team mates are sharing the `master` branch in it. The project has test suite named `Test Suites/TS1`, and you find a file `<projectDir>/Test Suites/TS1.ts` in the Working Directory. Current `TS1.ts` file contains a line: `<lastRun>2018-12-02T10:22:40</lastRun>`. On your machine, your remote-tracking branch `origin/master` and your local branch `master` have `Test Suites/TS1.ts` file with the same timestamp.
 2. Your team mate Alice pushed `<lastRun>2018-12-04T14:12:26</lastRun>` into the remote Git repository.
 3. Unfortunately, you forgot to *fetch* the change in the remote repository.
 4. You started Katalon Studio to open the project. You executed `Test Suites/TS1`. Effectively `TS1.ts` file in the Working Directory was updated with new timestamp `2018-12-04T14:26:55`.
