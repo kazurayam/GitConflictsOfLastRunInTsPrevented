@@ -206,6 +206,8 @@ index cbb23dc..8145846 100644
 
 Please note, the `lastRun` info is edited by the `lastRun-in-ts` filter. The timestamp is chaged from `2018-12-03T13:23:51` to `2018-12-01T00:00:00`.
 
+### Step4 Cleaning the project
+
 Please commit this and push to the remote Git repository. And spread the magical timestamp `2018-12-01T00:00:00` stuff to all of your team mates and CI servers. Once this constant timestamp is wide-spread all over, then the conflict 'lastRun' info in \*.ts file will NEVER occurs. Because as far as Git repository is concerned, `lastRun` info will never changes, will be equal to the magical timestamp `2018-12-01T00:00:00`. Therefore no conflict should happen any longer.
 
 ## Installing `sed for Windows`
