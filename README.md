@@ -116,13 +116,13 @@ We will employ 2 Git features.
 >Reference
 >- [Pro Git, 8.2 Customizing Git - Git Attributes](https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes)
 
-### Step1 Choose filter tool of your choice : sed
+### Step.1 Choose filter tool of your choice : sed
 
 Git filter requires one-liner script to filter a file. Here I choose good old [`sed`](http://gnuwin32.sourceforge.net/packages/sed.htm) command. `sed` is built-in on Mac OSX and linux. But if you work on Windows then you need to install *sed for Windows*. I will guide how to later.
 
 `sed` is not the only one to implement Git filter. [git-scm.com](https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes) shows a filter by Ruby. [Other page](https://www.jimhester.com/2017/11/01/git_clean_smudge/) uses Perl. Which ever command is OK as far as it works as a test filter.
 
-### Step2 Define Git filters
+### Step.2 Define Git filters
 
 We will define a pair of Git filter
 1. `lastRun-in-ts.clean`
@@ -155,7 +155,7 @@ You can check the editting result in Katalon Forum as well. Open Katalon Studio 
 
 All of your team members and CI servers who will execute the Katalon Studio project are required to edit the `~/.gitconfig` file as described here.
 
-### Step3 Add `.gitattributes` file to the project
+### Step.3 Add `.gitattributes` file to the project
 
 The `filter.lastRun-in-ts.clean` and `filter.lastRun-in-ts.smudge` defined in the `~/.gitconfig` file has global scope to all of Git repository of the user. However you have option if you want to make those filters effective to each indivisual Git repositories (= Katalon Studio projects).
 
@@ -168,7 +168,7 @@ This one line defines the `lastRun-in-ts` filter to be applicable to the reposit
 
 You should add `.gitattributes` file into the repository and let it shared by all of your team members.
 
-## Step3 How git behavior changes
+## Step.4 How git behavior changes
 
 Here assumed you haved defined filters and added .gitattributes.
 
@@ -206,7 +206,7 @@ index cbb23dc..8145846 100644
 
 Please note, the `lastRun` info is edited by the `lastRun-in-ts` filter. The timestamp is chaged from `2018-12-03T13:23:51` to `2018-12-01T00:00:00`.
 
-### Step4 Cleaning the project
+### Step.5 Cleaning the project
 
 Please commit this and push to the remote Git repository. And spread the magical timestamp `2018-12-01T00:00:00` stuff to all of your team mates and CI servers. Once this constant timestamp is wide-spread all over, then the conflict 'lastRun' info in \*.ts file will NEVER occurs. Because as far as Git repository is concerned, `lastRun` info will never changes, will be equal to the magical timestamp `2018-12-01T00:00:00`. Therefore no conflict should happen any longer.
 
