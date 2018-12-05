@@ -4,7 +4,7 @@ by kazurayam 5,Dec 2018
 
 ## Problem to solve
 
-When you create a Test Suite `Test Suite/TS1`, Katalon Stuido will make `<projectDir>/Test Suites/TS1.ts` file. The file will look like, for example, as follows:
+When you create a Test Suite `Test Suite/TS1` in a Katalon Studio project, Katalon Stuido will make `<projectDir>/Test Suites/TS1.ts` file. The file will look like, for example, as follows:
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <TestSuiteEntity>
@@ -16,9 +16,13 @@ When you create a Test Suite `Test Suite/TS1`, Katalon Stuido will make `<projec
 ...
 ```
 
-Please find a timestamp info `<lastRun>...</lastRun>` included. This timestamp will be updated by Katalon Studio when you ran the `Test Suites/TS1`.
+Please find a timestamp info as `<lastRun>` is included. This timestamp will be updated by Katalon Studio when you ran the `Test Suites/TS1`.
 
-If you share the project via a remote Git repository with your team mates, this `lastRun` info tends to causes conflicts.
+You have made the project version-controlled by Git. It's good idea. And you want to share the project with your team mates using a remote Git repository?
+
+I would warn you. The changes of `lastRun` info made by yourself and by your team mates tend to conflict. This problem is small but itchy, and will make your team collaboration very hard.
+
+### How Git conflict occurs in a Katalon Studio project --- a typical case
 
 Following steps illustrates how a Git conflict for `<lastRun>` occurs.
 
@@ -79,13 +83,6 @@ $ cat "Test Suites/TS1.ts"
 
 ## Solution proposed
 
-We will employ 2 Git features.
-1. filter
-2. `.gitattributes` file
-
->Reference
->- [Pro Git, 8.2 Customizing Git - Git Attributes](https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes)
-
 The `<proejectDir>/Test Suites/TS1.ts` file is very important for a Katalon Studio project. It is the definition of a Test Suite `TS1`. You can not *gitignore* it. You should save it in the Git repository.
 
 However the `<lastRun>...</lastRun>` line in the `TS1.ts` file looks  NOT significant. Whatever timestamp is saved in Git repository, possibly it does not matter. You can let Katalon Studio to overrite `<lastRun>` info in `TS1.ts` file the working directory as it wants to.
@@ -103,6 +100,13 @@ The following figure explains what *filter* does.
 ![filter](docs/images/Git%20clean%20filter%20and%20smudge%20filter.png)
 
 ## How to implement the solution
+
+We will employ 2 Git features.
+1. filter
+2. `.gitattributes` file
+
+>Reference
+>- [Pro Git, 8.2 Customizing Git - Git Attributes](https://git-scm.com/book/en/v2/Customizing-Git-Git-Attributes)
 
 ### Step1 Choose filter tool of your choice : sed
 
