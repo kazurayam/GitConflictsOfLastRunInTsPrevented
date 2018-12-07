@@ -255,10 +255,14 @@ C:\Users\kazurayam>chcp 65001
 
 In the Katalon Studio Forum, there are a few discussions related to the `lastRun` conflicts.
 
-1. [Git: master->master \[rejected - non-fast-forward\]](https://forum.katalon.com/discussion/11284/git-master-master-rejected-non-fast-forward) by Mate Mrse at 11/30/2018
-2. [\[Suggestion\]\[Katalon Studio\] Last Run info could be saved in a serarate file \(in the .ts file\)](https://forum.katalon.com/discussion/7146/suggestion-katalon-studio-last-run-info-could-be-saved-in-a-separate-fille-not-in-the-ts-file) by Lauro Araujo at 05/31/2018
-3. [Every time I run test suite it will be updated then I have a new git commit](https://forum.katalon.com/discussion/9587/every-time-i-run-test-suite--it--will-be-updated-then-i-have-a-new-git-commit) by qiulang at 09/11/2018
-4. [Commits from different machines cause conflicts in Git](https://forum.katalon.com/discussion/4881/commits-from-different-machines-cause-conflicts-in-git) by Alex Brohin at 08/04/2017
+1. [Git: master-&gt;master [rejected - non-fast-forward]](https://forum.katalon.com/t/git-master-master-rejected-non-fast-forward/14531) by Mate Mrse at 11/30/2018
+2. [[Suggestion][Katalon Studio] Last Run info could be saved in a separate file (in the .ts file)](https://forum.katalon.com/t/suggestion-katalon-studio-last-run-info-could-be-saved-in-a-separate-fille-not-in-the-ts-file/11291) by Lauro Araujo at 05/31/2018
+3. [Every time I run test suite it will be updated then I have a new git commit](https://forum.katalon.com/t/every-time-i-run-test-suite-it-will-be-updated-then-i-have-a-new-git-commit/13149) by qiulang at 09/11/2018
+4. [Commits from different machines cause conflicts in Git](https://forum.katalon.com/t/commits-from-different-machines-cause-conflicts-in-git/9060) by Alex Brohin at 08/04/2017
+
+
+
+
 
 Please note one thing.
 At 08/10/2017 (16 months ago), Oliver Howard posted a comment https://forum.katalon.com/discussion/comment/10492/#Comment_10492 where he presented a solution to `lastRun` conflicts. He explained how to configure Git with filter and .gitattribute file. Thanks to Oliver, but this comment seems to be unknown by Katalon users. I am going to explain just the same know-how again in a more verbose way so that it is shared by more of Katalon Studio uses working with Git.
